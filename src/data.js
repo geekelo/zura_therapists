@@ -4,6 +4,19 @@ export const CURRENT_MONTH_LABEL = 'November 2026'
 
 export const TEAM_PROMPT = 'What slowed the floor today, and what should tomorrow’s lead protect?'
 
+export const POST_LABELS = [
+  { id: 'task', label: 'Task for you', tone: 'ink' },
+  { id: 'group', label: 'Group task', tone: 'gold' },
+  { id: 'query', label: 'Query', tone: 'wait' },
+  { id: 'sanction', label: 'Sanction', tone: 'no' },
+  { id: 'reminder', label: 'Reminder', tone: 'gold' },
+  { id: 'session', label: 'Assigned session', tone: 'ok' },
+]
+
+export function postLabel(id) {
+  return POST_LABELS.find((item) => item.id === id) || { id, label: id, tone: 'ink' }
+}
+
 export const TASK_TYPES = [
   { id: 'all', label: 'All' },
   { id: 'session', label: 'Session' },
@@ -1405,6 +1418,186 @@ export function talk() {
   ]
 }
 
+function comment(id, from, text, date, time) {
+  return { id, from, text, date, time }
+}
+
+export function posts() {
+  return [
+    {
+      id: 'p-task-amara',
+      label: 'task',
+      from: 'Floor desk',
+      to: 'Amara Cole',
+      date: '2026-11-24',
+      time: '08:40',
+      title: 'Deep tissue at 10:00, lighter through the neck',
+      body: 'Guest A.O. is back in Suite 3 for 90 minutes. Last visit they asked for lighter work through the neck and jaw. The intake card is already on the suite bench.',
+      comments: [
+        comment('c-task-amara', 'Amara Cole', 'Read the card. Oil is warming now.', '2026-11-24', '09:02'),
+      ],
+    },
+    {
+      id: 'p-task-noor',
+      label: 'task',
+      from: 'Floor desk',
+      to: 'Noor Vermeer',
+      date: '2026-11-24',
+      time: '10:10',
+      title: 'Pregnancy booking, stay on the left side',
+      body: 'Guest R.D. is in Suite 4 at 12:00. Second trimester. She asked to stay on her left side for the longer passes. The cushion is already in the suite.',
+      comments: [],
+    },
+    {
+      id: 'p-group-sundays',
+      label: 'group',
+      from: 'Lena Visser',
+      to: '',
+      date: '2026-11-24',
+      time: '07:40',
+      title: 'December Sundays need two more hands',
+      body: 'The Sunday book in December is already past a single therapist. Put your name beside 6, 13, or 20 December on the studio wall if you can work one. The 27th stays closed.',
+      comments: [
+        comment('c-sun-tobi', 'Tobi Adeyemi', 'I can take the 13th.', '2026-11-24', '08:55'),
+      ],
+    },
+    {
+      id: 'p-group-brief',
+      label: 'group',
+      from: 'Jonas Bakker',
+      to: '',
+      date: '2026-11-24',
+      time: '09:05',
+      title: 'The 15:00 brief still happens',
+      body: 'Hold it even if the book is busy. Cover the late arrival, who resets Suite 2, and who is on the door at close. Noor is shadowing, not running it.',
+      comments: [],
+    },
+    {
+      id: 'p-query-locker',
+      label: 'query',
+      from: 'Amara Cole',
+      to: '',
+      date: '2026-11-20',
+      time: '11:15',
+      title: 'Locker 4 key sticks',
+      body: 'The key turns halfway and then stops. I can still get in, but the evening shift cannot. Is this a new barrel or a temporary locker?',
+      comments: [
+        comment(
+          'c-locker',
+          'Jonas Bakker',
+          'Facilities has the lock. They will be in before Thursday close. Use locker 6 until then.',
+          '2026-11-21',
+          '09:30',
+        ),
+      ],
+    },
+    {
+      id: 'p-sanction-film',
+      label: 'sanction',
+      from: 'House desk',
+      to: '',
+      date: '2026-11-22',
+      time: '19:20',
+      title: 'Guest corridor was filmed',
+      body: 'A story cut from 22 November included the guest corridor. The file was deleted the same hour. This is a recorded sanction for the floor: filming stays in the studio, with the door shut. The next corridor cut is a formal warning for the person holding the phone.',
+      comments: [
+        comment('c-sanction', 'Lena Visser', 'I have said it again at the brief. Studio only.', '2026-11-23', '09:10'),
+      ],
+    },
+    {
+      id: 'p-remind-oil',
+      label: 'reminder',
+      from: 'House desk',
+      to: '',
+      date: '2026-11-24',
+      time: '08:10',
+      title: 'Sweet almond is on the last tin',
+      body: 'Use grapeseed for body work until the delivery at 15:00. Facial oils are untouched. If a guest has a nut note, tell the desk before the booking so the suite can be moved.',
+      comments: [],
+    },
+    {
+      id: 'p-remind-break',
+      label: 'reminder',
+      from: 'Amara Cole',
+      to: '',
+      date: '2026-11-24',
+      time: '09:12',
+      title: 'Breaks still happen on a full book',
+      body: 'If the 14:00 runs long, Ife can take the reset. Do not skip the break between suites.',
+      comments: [
+        comment('c-break', 'Noor Vermeer', 'Noted. I will hand the reset over if we slip.', '2026-11-24', '10:44'),
+      ],
+    },
+    {
+      id: 'p-session-amara',
+      label: 'session',
+      from: 'People team',
+      to: 'Amara Cole',
+      date: '2026-11-23',
+      time: '16:00',
+      title: 'Stillwater · Thursday 26 November',
+      body: 'Dr Helen Voss, 18:00–18:50, Quiet Room. Focus: leadership load before the December rush. If the floor runs late, text the people desk before 17:00 and they will hold the room for fifteen minutes.',
+      comments: [],
+    },
+    {
+      id: 'p-session-noor',
+      label: 'session',
+      from: 'People team',
+      to: 'Noor Vermeer',
+      date: '2026-11-23',
+      time: '16:05',
+      title: 'Stillwater · Thursday 26 November',
+      body: 'Dr Helen Voss, 17:10–18:00, Quiet Room, before Amara’s hour. This is session four of eight. Focus: asking for help before the room goes quiet.',
+      comments: [],
+    },
+  ]
+}
+
+export function reports() {
+  return [
+    {
+      id: 'r1',
+      date: '2026-11-24',
+      time: '08:05',
+      from: 'Lena Visser',
+      title: 'Opening report',
+      body: 'Both suites were ready. Walk-ins are paused until 11:00 for the couple booking. Sweet almond is on the last tin, so grapeseed is out for body work.',
+    },
+    {
+      id: 'r2',
+      date: '2026-11-23',
+      time: '18:20',
+      from: 'Amara Cole',
+      title: 'Close of day',
+      body: 'Rooms were ready by 18:10. The pressure note reached Suite 3 before the guest. Social filming stayed in the studio after yesterday’s drift toward the corridor.',
+    },
+    {
+      id: 'r3',
+      date: '2026-11-22',
+      time: '19:05',
+      from: 'Jonas Bakker',
+      title: 'Corridor filming',
+      body: 'A story cut included the guest corridor. The file was deleted the same hour. The sanction is on the posts timeline. The studio door stays shut for any house filming.',
+    },
+    {
+      id: 'r4',
+      date: '2026-11-21',
+      time: '17:40',
+      from: 'House desk',
+      title: 'Suite 2 after the leak',
+      body: 'Suite 2 was off the book for the evening. The shelf was stripped and the diffuser replaced. The room is bookable again. Tobi closed the reset without being asked.',
+    },
+    {
+      id: 'r5',
+      date: '2026-11-18',
+      time: '09:10',
+      from: 'House desk',
+      title: 'Cover for an absence',
+      body: 'Amara called at 07:20 and the book was covered. Noor’s absence the same day was covered before ten. Both sit on the attendance record.',
+    },
+  ]
+}
+
 export function createHouse() {
   const amara = amaraBundle()
   const noor = noorBundle()
@@ -1413,6 +1606,8 @@ export function createHouse() {
     p2p: [...amara.p2p, ...noor.p2p],
     announcements: announcements(),
     talk: talk(),
+    posts: posts(),
+    reports: reports(),
   }
 }
 

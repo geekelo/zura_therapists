@@ -24,7 +24,7 @@ export default function Login() {
         <p className="login-kicker">Therapist studio · Keizersgracht</p>
         <h1>The floor, the work, and the care you keep for yourself.</h1>
         <p className="login-copy">
-          Messages, tasks, leave, learning, earnings, and your Stillwater sessions live here. Guest bookings do not.
+          The floor timeline, your tasks, leave, learning, earnings, and Stillwater sessions live here. Guest bookings do not.
         </p>
       </section>
       <section className="login-panel">

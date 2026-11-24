@@ -15,8 +15,12 @@ import Bio from './Bio'
 import Attendance from './Attendance'
 import Announcements from './Announcements'
 import Chat from './Chat'
+import Posts from './Posts'
+import Accountability from './Accountability'
 
 const SCREENS = {
+  posts: Posts,
+  accountability: Accountability,
   today: Today,
   messages: Messages,
   tasks: Tasks,
@@ -43,12 +47,13 @@ export default function Shell() {
   const announceNew = unreadAnnouncements(house.announcements, bundle.seenAnnouncements).length
   const chatNew = unreadTalk(house.talk, therapist.name, bundle.seenTalk).length
   const [moreOpen, setMoreOpen] = useState(false)
-  const tabIds = ['today', 'attendance', 'chat', 'tasks']
+  const tabIds = ['posts', 'attendance', 'chat', 'tasks']
 
   const groups = [
     {
       label: 'Work',
       items: [
+        { id: 'posts', label: 'Posts' },
         { id: 'today', label: 'Today' },
         { id: 'attendance', label: 'Attendance', dot: !clockedIn },
         { id: 'messages', label: 'Messages', badge: unread },
@@ -97,15 +102,20 @@ export default function Shell() {
     return () => window.removeEventListener('keydown', onKey)
   }, [moreOpen])
 
-  const Screen = SCREENS[route] || Today
+  const Screen = SCREENS[route] || Posts
+
+  function current(id) {
+    if (id === 'posts' && route === 'accountability') return true
+    return route === id
+  }
 
   function itemButton(item) {
     return (
       <button
         key={item.id}
         type="button"
-        className={route === item.id ? 'nav-btn active' : 'nav-btn'}
-        aria-current={route === item.id ? 'page' : undefined}
+        className={current(item.id) ? 'nav-btn active' : 'nav-btn'}
+        aria-current={current(item.id) ? 'page' : undefined}
         onClick={() => go(item.id)}
       >
         <span>{item.label}</span>
@@ -175,8 +185,8 @@ export default function Shell() {
             <button
               key={item.id}
               type="button"
-              className={route === item.id ? 'tab on' : 'tab'}
-              aria-current={route === item.id ? 'page' : undefined}
+              className={current(item.id) ? 'tab on' : 'tab'}
+              aria-current={current(item.id) ? 'page' : undefined}
               onClick={() => go(item.id)}
             >
               <span>{item.label}</span>
@@ -186,7 +196,7 @@ export default function Shell() {
           ))}
         <button
           type="button"
-          className={!tabIds.includes(route) || moreOpen ? 'tab on' : 'tab'}
+          className={(!tabIds.includes(route) && route !== 'accountability') || moreOpen ? 'tab on' : 'tab'}
           aria-expanded={moreOpen}
           aria-controls="more-menu"
           onClick={() => setMoreOpen((open) => !open)}
@@ -222,8 +232,8 @@ export default function Shell() {
                     <button
                       key={item.id}
                       type="button"
-                      className={route === item.id ? 'more-btn on' : 'more-btn'}
-                      aria-current={route === item.id ? 'page' : undefined}
+                      className={current(item.id) ? 'more-btn on' : 'more-btn'}
+                      aria-current={current(item.id) ? 'page' : undefined}
                       onClick={() => go(item.id)}
                     >
                       <span>{item.label}</span>

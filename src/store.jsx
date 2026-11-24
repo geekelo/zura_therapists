@@ -48,10 +48,12 @@ function loadHouse() {
   if (raw) {
     try {
       const parsed = JSON.parse(raw)
-      if (parsed && Array.isArray(parsed.team) && Array.isArray(parsed.p2p)) {
+        if (parsed && Array.isArray(parsed.team) && Array.isArray(parsed.p2p)) {
         const seed = createHouse()
         if (!Array.isArray(parsed.announcements)) parsed.announcements = seed.announcements
         if (!Array.isArray(parsed.talk)) parsed.talk = seed.talk
+        if (!Array.isArray(parsed.posts)) parsed.posts = seed.posts
+        if (!Array.isArray(parsed.reports)) parsed.reports = seed.reports
         return parsed
       }
     } catch {
@@ -67,7 +69,7 @@ function init() {
   if (id && THERAPISTS[id]) {
     return {
       therapistId: id,
-      route: 'today',
+      route: 'posts',
       flash: null,
       bundle: loadBundle(id),
       house,
@@ -77,7 +79,7 @@ function init() {
   }
   return {
     therapistId: null,
-    route: 'today',
+    route: 'posts',
     flash: null,
     bundle: null,
     house,
@@ -96,7 +98,7 @@ function reducer(state, action) {
       return {
         ...state,
         therapistId: action.id,
-        route: 'today',
+        route: 'posts',
         flash: null,
         bundle: loadBundle(action.id),
         selectedTaskId: null,
@@ -106,7 +108,7 @@ function reducer(state, action) {
       return {
         ...state,
         therapistId: null,
-        route: 'today',
+        route: 'posts',
         flash: null,
         bundle: null,
         selectedTaskId: null,
@@ -366,12 +368,20 @@ function reducer(state, action) {
     case 'ensureFloor': {
       let house = state.house
       let bundle = state.bundle
-      if (house && (!Array.isArray(house.announcements) || !Array.isArray(house.talk))) {
+      if (
+        house &&
+        (!Array.isArray(house.announcements) ||
+          !Array.isArray(house.talk) ||
+          !Array.isArray(house.posts) ||
+          !Array.isArray(house.reports))
+      ) {
         const seed = createHouse()
         house = {
           ...house,
           announcements: Array.isArray(house.announcements) ? house.announcements : seed.announcements,
           talk: Array.isArray(house.talk) ? house.talk : seed.talk,
+          posts: Array.isArray(house.posts) ? house.posts : seed.posts,
+          reports: Array.isArray(house.reports) ? house.reports : seed.reports,
         }
       }
       if (bundle && state.therapistId && (!Array.isArray(bundle.seenAnnouncements) || !Array.isArray(bundle.seenTalk))) {
@@ -400,6 +410,65 @@ function reducer(state, action) {
       return {
         ...state,
         bundle: { ...state.bundle, seenTalk: [...seen, ...extra] },
+      }
+    }
+    case 'addPost': {
+      const title = action.title.trim()
+      const body = action.body.trim()
+      if (!title || !body) return { ...state, flash: 'Write a title and a note before you post.' }
+      const item = {
+        id: uid(),
+        label: action.label,
+        from: action.from,
+        to: action.to || '',
+        date: APP_TODAY,
+        time: action.time,
+        title,
+        body,
+        comments: [],
+      }
+      return {
+        ...state,
+        flash: 'Posted on the timeline.',
+        house: { ...state.house, posts: [item, ...(state.house.posts || [])] },
+      }
+    }
+    case 'addComment': {
+      const text = action.text.trim()
+      if (!text) return state
+      const comment = {
+        id: uid(),
+        from: action.from,
+        text,
+        date: APP_TODAY,
+        time: action.time,
+      }
+      return {
+        ...state,
+        house: {
+          ...state.house,
+          posts: (state.house.posts || []).map((post) =>
+            post.id === action.postId ? { ...post, comments: [...(post.comments || []), comment] } : post,
+          ),
+        },
+      }
+    }
+    case 'addReport': {
+      const title = action.title.trim()
+      const body = action.body.trim()
+      if (!title || !body) return { ...state, flash: 'Write a title and the report before you file it.' }
+      const item = {
+        id: uid(),
+        date: APP_TODAY,
+        time: action.time,
+        from: action.from,
+        title,
+        body,
+      }
+      return {
+        ...state,
+        flash: 'Report filed on the accountability timeline.',
+        house: { ...state.house, reports: [item, ...(state.house.reports || [])] },
       }
     }
     case 'postPublic': {
@@ -502,7 +571,12 @@ export function StoreProvider({ children }) {
   }, [state.bundle])
 
   useEffect(() => {
-    const houseMissing = state.house && (!Array.isArray(state.house.announcements) || !Array.isArray(state.house.talk))
+    const houseMissing =
+      state.house &&
+      (!Array.isArray(state.house.announcements) ||
+        !Array.isArray(state.house.talk) ||
+        !Array.isArray(state.house.posts) ||
+        !Array.isArray(state.house.reports))
     const bundleMissing =
       state.bundle && (!Array.isArray(state.bundle.seenAnnouncements) || !Array.isArray(state.bundle.seenTalk))
     if (houseMissing || bundleMissing) dispatch({ type: 'ensureFloor' })
@@ -583,6 +657,15 @@ export function StoreProvider({ children }) {
     },
     postPublic(from, text, time) {
       dispatch({ type: 'postPublic', from, text, time })
+    },
+    addPost(payload) {
+      dispatch({ type: 'addPost', ...payload })
+    },
+    addComment(postId, from, text, time) {
+      dispatch({ type: 'addComment', postId, from, text, time })
+    },
+    addReport(payload) {
+      dispatch({ type: 'addReport', ...payload })
     },
     sendChat(from, to, text, time) {
       dispatch({ type: 'sendChat', from, to, text, time })

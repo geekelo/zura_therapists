@@ -609,6 +609,129 @@ textarea { min-height: 110px; resize: vertical; }
 
 .quiet-card { background: #f3ebdf; }
 
+.composer-card { margin-bottom: 8px; }
+.composer-card h2 { font-size: 1.35rem; }
+
+.post-compose {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.post-compose select,
+.post-field {
+  background: var(--paper);
+  padding: 8px 12px;
+}
+
+.post-compose select {
+  width: auto;
+  flex: 0 1 auto;
+  max-width: 11.5rem;
+}
+
+.post-field {
+  flex: 1 1 160px;
+  min-width: 0;
+}
+
+.post-compose .btn { flex: 0 0 auto; }
+.post-error { flex: 1 0 100%; margin: 0; }
+
+.label-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 14px;
+}
+
+.label-row .seg {
+  flex: 1 1 240px;
+  min-width: 0;
+  margin: 0;
+}
+
+.account-jump {
+  border: 1px solid var(--gold);
+  background: var(--gold-soft);
+  color: var(--sage);
+  border-radius: 999px;
+  padding: 6px 14px;
+  white-space: nowrap;
+}
+
+.feed, .timeline {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.post-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.post-top > span:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.post-top strong { font-weight: 560; }
+.post-top .meta { margin: 0; }
+.post-top .pill { align-self: flex-start; }
+.post-for { margin-top: -4px; }
+
+.avatar.sm {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  font-size: 12px;
+}
+
+.comments {
+  list-style: none;
+  margin: 4px 0 12px;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.comment {
+  background: #f6f0e6;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.comment p { margin: 0; }
+
+.comment-by {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 14px;
+  font-weight: 560;
+  margin-bottom: 4px;
+}
+
+.comment-by span {
+  font-weight: 400;
+  color: var(--soft);
+  font-size: 13px;
+}
+
+.post .compose { margin-top: 4px; }
+
 .thread {
   display: flex;
   flex-direction: column;
@@ -684,6 +807,8 @@ textarea { min-height: 110px; resize: vertical; }
   .row { padding: 14px 8px; }
   .seg { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .seg button { flex: 0 0 auto; min-height: 40px; }
+  .account-jump { min-height: 40px; }
+  .post-compose .btn { width: auto; }
   .btn { min-height: 44px; }
   .btn.small { min-height: 40px; }
   .score { width: 44px; height: 44px; }
